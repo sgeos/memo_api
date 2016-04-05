@@ -28,11 +28,17 @@ defmodule MemoApi.Router do
 
   # Other scopes may use custom stacks.
   scope "/api", MemoApi do
+    pipe_through :browser # Use the default browser stack
+
+    resources "/sessions", SessionController, only: [:new]
+  end
+
+  scope "/api", MemoApi do
     pipe_through :api
 
     get "/", ApiController, :index
     post "/register", UserController, :create
-    resources "/sessions", SessionController, only: [:new, :create, :delete]
+    resources "/sessions", SessionController, only: [:create, :delete]
   end
 
   scope "/api", MemoApi do

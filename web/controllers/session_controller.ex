@@ -1,17 +1,17 @@
 defmodule MemoApi.SessionController do
   use MemoApi.Web, :controller
 
-  alias MemoApi.User
-  alias MemoApi.UserQuery
+  alias MemoApi.Auth
 
   plug :scrub_params, "user" when action in [:login]
 
+  # useless for a JSON API, but useful for the browser
   def new(conn, _) do
     render conn, "new.html"
   end
 
   def create(conn, %{"session" => %{"email" => email, "password" => password}}) do
-    case MemoApi.Auth.login_by_email_and_password(conn, email, password, repo: Repo) do
+    case Auth.login_by_email_and_password(conn, email, password, repo: Repo) do
       {:ok, conn} ->
         conn
         #|> put_flash(:info, "Logged in.")
@@ -25,7 +25,7 @@ defmodule MemoApi.SessionController do
 
   def delete(conn, _params) do
     conn
-    |> Guardian.Plug.sign_out
+    |> Auth.logout
     #|> put_flash(:info, "Logged out successfully.")
     |> redirect(to: "/")
   end

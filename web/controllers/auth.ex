@@ -36,9 +36,9 @@ defmodule MemoApi.Auth do
     end
   end
 
-  def login(conn, verified_user) do
+  def login(conn, verified_user, jwt_type \\ "JWT", claims \\ %{}) do
     conn
-    |> Guardian.Plug.sign_in(verified_user)
+    |> Guardian.Plug.api_sign_in(verified_user, jwt_type, claims)
   end
 
   def logout(conn, _params) do

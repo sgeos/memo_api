@@ -2,6 +2,7 @@ defmodule MemoApi.UserController do
   use MemoApi.Web, :controller
 
   alias MemoApi.User
+  alias MemoApi.Auth
 
   plug :scrub_params, "user" when action in [:create, :update]
 
@@ -16,6 +17,7 @@ defmodule MemoApi.UserController do
     case Repo.insert(changeset) do
       {:ok, user} ->
         conn
+        |> Auth.login(user)
         |> put_status(:created)
         |> put_resp_header("location", user_path(conn, :show, user))
         |> render("show.json", user: user)
